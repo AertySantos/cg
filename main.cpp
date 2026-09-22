@@ -13,12 +13,12 @@
 int keyStatus[256];
 
 // Window dimensions
-const GLint Width = 500;
-const GLint Height = 500;
+const GLint Width = 900;
+const GLint Height = 900;
 
 // Viewing dimensions
-const GLint ViewingWidth = 500;
-const GLint ViewingHeight = 500;
+const GLint ViewingWidth = 900;
+const GLint ViewingHeight = 900;
 
 //Controla a animacao do robo
 int animate = 0;
@@ -28,11 +28,30 @@ Robo robo; //Um rodo
 Tiro * tiro = NULL; //Um tiro por vez
 Alvo alvo(0, 200); //Um alvo por vez
 
+int atingido = 0;
+static char str[1000];
+void * font = GLUT_BITMAP_9_BY_15;
+
+void ImprimePlacar(GLfloat x, GLfloat y){
+    glColor3f(1.0, 1.0, 1.0);
+    //Cria a string a ser impressa
+    char *tmpStr;
+    sprintf(str, "Atingido: %d", atingido );
+    //Define a posicao onde vai comecar a imprimir
+    glRasterPos2f(x, y);
+    //Imprime um caractere por vez
+    tmpStr = str;
+    while( *tmpStr ){
+    glutBitmapCharacter(font, *tmpStr);
+    tmpStr++;
+    }
+}
+
 void renderScene(void)
 {
      // Clear the screen.
      glClear(GL_COLOR_BUFFER_BIT);
- 
+     ImprimePlacar(-ViewingWidth/2 + 10, ViewingHeight/2 - 20);   
      robo.Desenha();
      
      if (tiro) tiro->Desenha();
@@ -143,7 +162,8 @@ void idle(void)
 
         //Trata colisao
         if (alvo.Atingido(tiro)){
-            alvo.Recria(rand()%500 - 250, 200);
+            alvo.Recria(rand()%300 -100, rand()%200 -100);
+            atingido++;
         }
 
         if (!tiro->Valido()){ 
